@@ -22,7 +22,7 @@ public static class ListCreator
 
         for (int i = 0; i < sizeWanted; i++)
         {
-            enemyList.Add(new Enemy());
+            enemyList.Add(new Enemy(EnemyManager.GetNewEnemyId()));
         }
 
         return enemyList;
