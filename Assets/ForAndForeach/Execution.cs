@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Profiling;
 
@@ -20,10 +21,12 @@ namespace ForAndForeach
                 EnemyExecution(ListCreator.GetEnemyList(100));
                 EnemyExecution(ListCreator.GetEnemyList(1000));
                 EnemyExecution(ListCreator.GetEnemyList(10000));
+
+                FindFirstEnemy(EnemyManager.GetAllEnemies());
             }
         }
 
-        public void BoolExecution(List<bool> boolList)
+        private void BoolExecution(List<bool> boolList)
         {
             Profiler.BeginSample($"For And Foreach - For Bool - {boolList.Count}");
             for (int i = 0; i < boolList.Count; i++)
@@ -39,12 +42,12 @@ namespace ForAndForeach
             }
             Profiler.EndSample();
 
-            Profiler.BeginSample($"For And Foreach - Linq Bool - {boolList.Count}");
+            Profiler.BeginSample($"For And Foreach - List.Foreach Bool - {boolList.Count}");
             boolList.ForEach(b => Debug.Log($"Value {b}"));
             Profiler.EndSample();
         }
 
-        public void EnemyExecution(List<Enemy> enemyList)
+        private void EnemyExecution(List<Enemy> enemyList)
         {
             Profiler.BeginSample($"For And Foreach - For Enemy - {enemyList.Count}");
             for (int i = 0; i < enemyList.Count; i++)
@@ -60,8 +63,52 @@ namespace ForAndForeach
             }
             Profiler.EndSample();
 
-            Profiler.BeginSample($"For And Foreach - Linq Enemy - {enemyList.Count}");
+            Profiler.BeginSample($"For And Foreach - Collections Enemy - {enemyList.Count}");
             enemyList.ForEach(e => Debug.Log($"Value {e.ToString()}"));
+            Profiler.EndSample();
+        }
+
+        private void FindFirstEnemy(List<EnemyBehavior> enemyList)
+        {
+            Profiler.BeginSample($"For And Foreach - For Enemy - First Enemy IsDead");
+            for (int i = 0; i < enemyList.Count; i++)
+            {
+                if (!enemyList[i].IsDead())
+                {
+                    Debug.Log($"Enemy Found {i}: {enemyList[i].ToString()}");
+                }
+            }
+            Profiler.EndSample();
+
+            Profiler.BeginSample($"For And Foreach - Foreach Enemy - First Enemy IsDead");
+            foreach (EnemyBehavior enemy in enemyList)
+            {
+                if (!enemy.IsDead())
+                {
+                    Debug.Log($"Enemy Found: {enemy.ToString()}");
+                }
+            }
+            Profiler.EndSample();
+
+            ForeachEnemyCollections(enemyList);
+
+            Profiler.BeginSample($"For And Foreach - Linq Enemy - First Enemy IsDead");
+            Debug.Log($"Enemy Found: {enemyList.Where(e => e.IsDead()).ToString()}");
+            Profiler.EndSample();
+        }
+
+        private void ForeachEnemyCollections(List<EnemyBehavior> enemyList)
+        {
+            Profiler.BeginSample($"For And Foreach - Foreach Collections Enemy - First Enemy IsDead");
+            enemyList.ForEach(e =>
+            {
+                if (e.IsDead())
+                {
+                    Debug.Log($"Enemy Found: {e.ToString()}");
+                    Profiler.EndSample();
+                    return;
+                }
+            });
             Profiler.EndSample();
         }
     }
