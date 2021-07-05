@@ -23,6 +23,7 @@ namespace ForAndForeach
                 EnemyExecution(ListCreator.GetEnemyList(10000));
 
                 FindFirstEnemy(EnemyManager.GetAllEnemies());
+                FirstDeadEnemy(EnemyManager.GetAllEnemies());
             }
         }
 
@@ -69,13 +70,16 @@ namespace ForAndForeach
         }
 
         private void FindFirstEnemy(List<EnemyBehavior> enemyList)
+        private void FirstDeadEnemy(List<EnemyBehavior> enemyList)
         {
             Profiler.BeginSample($"For And Foreach - For Enemy - First Enemy IsDead");
             for (int i = 0; i < enemyList.Count; i++)
             {
                 if (!enemyList[i].IsDead())
+                if (enemyList[i].IsDead())
                 {
                     Debug.Log($"Enemy Found {i}: {enemyList[i].ToString()}");
+                    break;
                 }
             }
             Profiler.EndSample();
@@ -84,8 +88,10 @@ namespace ForAndForeach
             foreach (EnemyBehavior enemy in enemyList)
             {
                 if (!enemy.IsDead())
+                if (enemy.IsDead())
                 {
                     Debug.Log($"Enemy Found: {enemy.ToString()}");
+                    break;
                 }
             }
             Profiler.EndSample();
@@ -109,6 +115,7 @@ namespace ForAndForeach
                     return;
                 }
             });
+            Debug.Log($"Enemy Found: {enemyList.FirstOrDefault(e => !e.IsDead())}");
             Profiler.EndSample();
         }
     }
