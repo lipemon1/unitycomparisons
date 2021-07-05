@@ -24,6 +24,7 @@ namespace ForAndForeach
 
                 FirstDeadEnemy(EnemyManager.GetAllEnemies());
                 AllDeadEnemies(EnemyManager.GetAllEnemies());
+                ComplexEnemyTest(EnemyManager.GetAllEnemies());
             }
         }
 
@@ -135,6 +136,37 @@ namespace ForAndForeach
             {
                 Debug.Log($"Enemy Found: {e}");
             });
+            Profiler.EndSample();
+        }
+
+        private void ComplexEnemyTest(List<EnemyBehavior> enemyList)
+        {
+            // Sum all attack from live ranged enemies
+
+            Profiler.BeginSample($"For And Foreach - For Enemy - Complex Enemy");
+            int totalAttack = 0;
+            for (int i = 0; i < enemyList.Count; i++)
+            {
+                if (!enemyList[i].IsDead() && enemyList[i].IsRanged())
+                {
+                    totalAttack += enemyList[i].GetAttack();
+                }
+            }
+            Profiler.EndSample();
+
+            Profiler.BeginSample($"For And Foreach - Foreach Enemy - Complex Enemy");
+            totalAttack = 0;
+            foreach (EnemyBehavior enemy in enemyList)
+            {
+                if (!enemy.IsDead() && enemy.IsRanged())
+                {
+                    totalAttack += enemy.GetAttack();
+                }
+            }
+            Profiler.EndSample();
+
+            Profiler.BeginSample($"For And Foreach - List.FirstOrDefault - Complex Enemy");
+            enemyList.Where(e => !e.IsDead() && e.IsRanged()).Sum(e => e.GetAttack());
             Profiler.EndSample();
         }
     }

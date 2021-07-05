@@ -66,5 +66,15 @@ namespace ForAndForeach
         {
             return _enemy.IsDead();
         }
+
+        public bool IsRanged()
+        {
+            return _enemy.Ranged;
+        }
+
+        public int GetAttack()
+        {
+            return _enemy.Attack;
+        }
     }
 }
